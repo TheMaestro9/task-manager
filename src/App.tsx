@@ -1,6 +1,6 @@
-import React from 'react';
+import './App.scss';
+import './index.scss';
 import logo from './logo.svg';
-import './App.css';
 
 function App() {
   return (
@@ -10,6 +10,9 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
+        <div className="text-3xl font-bold text-blue-500"> 
+          Hello World tailwind
+        </div>
         <a
           className="App-link"
           href="https://reactjs.org"
