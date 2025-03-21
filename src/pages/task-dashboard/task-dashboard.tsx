@@ -1,34 +1,45 @@
-import { useEffect, useState } from "react";
-import { first } from "rxjs";
-import { Task } from "../../models/task/task";
-import { addTask$, fetchTasks$ } from "../../models/task/task-service";
-import TaskCard from "./task-card";
+import React from "react";
+import { TaskProvider, useTaskContext } from "../../context/TaskContext";
+import { TaskStatus } from "../../models/task/task";
+import StatusColumn from "./status-column";
+import "./task-dashboard.scss";
+
+const TaskDashboardContent: React.FC = () => {
+  const { addTask } = useTaskContext();
+
+  const handleAddTask = () => {
+    addTask({
+      title: "New Task",
+      description: "New Task Description",
+    });
+  };
+
+  return (
+    <div className="p-6 diagonal-gradient">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-white">Task Dashboard</h1>
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          onClick={handleAddTask}
+        >
+          Add Task
+        </button>
+      </div>
+
+      <div className="flex gap-6 overflow-x-auto pb-4">
+        <StatusColumn status={TaskStatus.PENDING} />
+        <StatusColumn status={TaskStatus.IN_PROGRESS} />
+        <StatusColumn status={TaskStatus.COMPLETE} />
+      </div>
+    </div>
+  );
+};
 
 const TaskDashboard: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  useEffect(() => {
-    fetchTasks$()
-      .pipe(first())
-      .subscribe((fetchedTasks) => {
-        setTasks(fetchedTasks);
-      });
-  }, []);
-
-  function addTask() {
-    const newTask = new Task();
-    newTask.title = "New Task";
-    newTask.description = "New Task Description";
-    addTask$(newTask).subscribe((addedTask) => {
-      setTasks([...tasks, addedTask]);
-    });
-  }
   return (
-    <div className="flex flex-wrap gap-4">
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
-      ))}
-      <div onClick={addTask}> add task </div>
-    </div>
+    <TaskProvider>
+      <TaskDashboardContent />
+    </TaskProvider>
   );
 };
 
