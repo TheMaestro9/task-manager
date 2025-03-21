@@ -1,14 +1,15 @@
 // services/api.ts
 import { Observable, of } from "rxjs";
-import { Task, TaskStatus } from "./task";
+import { Task } from "./task";
 
 export function fetchTasks$() {
-  return of(getDummyTasks());
+  return of(getFromLocalStorage());
 }
 
 // this function mimics the api call to add a task
 export function addTask$(task: Task): Observable<Task> {
   task.id = generateRandomId();
+  saveToLocalStorage(task);
   return of(task);
 }
 
@@ -16,25 +17,18 @@ export function generateRandomId() {
   return Math.random().toString(20);
 }
 
-function getDummyTasks(): Task[] {
-  return [
-    {
-      id: "1",
-      title: "Task 1",
-      description: "Task 1 description",
-      status: TaskStatus.PENDING,
-    },
-    {
-      id: "2",
-      title: "Task 2",
-      description: "Task 2 description",
-      status: TaskStatus.IN_PROGRESS,
-    },
-    {
-      id: "3",
-      title: "Task 3",
-      description: "Task 3 description",
-      status: TaskStatus.COMPLETE,
-    },
-  ];
+function saveToLocalStorage(task: Task) {
+  const tasks = getFromLocalStorage();
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function getFromLocalStorage(): Task[] {
+  const tasksFromStorage = localStorage.getItem("tasks");
+
+  if (tasksFromStorage) {
+    return JSON.parse(tasksFromStorage) as Task[];
+  }
+
+  return [];
 }
