@@ -41,7 +41,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
           <img width={14} src={EditIcon} alt="edit" />
         </div>
       </div>
-      <div className="text-sm text-gray-500">{task.description}</div>
+      <div className="text-sm text-gray-500 line-clamp-2">
+        {task.description}
+      </div>
       <Badge
         placeholder={getTaskStatusName(task.status)}
         color={getBadgeColor(task.status)}

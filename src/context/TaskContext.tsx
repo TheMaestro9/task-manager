@@ -7,11 +7,16 @@ import React, {
 } from "react";
 import { first } from "rxjs";
 import { Task } from "../models/task/task";
-import { addTask$, fetchTasks$ } from "../models/task/task-service";
+import {
+  addTask$,
+  deleteTask$,
+  fetchTasks$,
+} from "../models/task/task-service";
 
 interface TaskContextType {
   tasks: Task[];
   addTask: (taskData: Partial<Task>) => void;
+  deleteTask: (id: string) => void;
   getTasksByStatus: (status: string) => Task[];
 }
 
@@ -45,8 +50,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
     return tasks.filter((task) => task.status === status);
   };
 
+  const deleteTask = (id: string) => {
+    deleteTask$(id).subscribe(() => {
+      setTasks(tasks.filter((task) => task.id !== id));
+    });
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, addTask, getTasksByStatus }}>
+    <TaskContext.Provider
+      value={{ tasks, addTask, getTasksByStatus, deleteTask }}
+    >
       {children}
     </TaskContext.Provider>
   );

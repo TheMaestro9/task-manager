@@ -34,7 +34,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
   };
 
   return (
-    <div className="flex flex-col justify-between gap-4 p-4 bg-gray-100 rounded-xl min-w-[300px] ">
+    <div className="flex flex-col justify-between gap-4 p-4 bg-gray-100 rounded-xl w-[300px] ">
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold mb-2">
           {getTaskStatusName(status)}
@@ -47,7 +47,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
             <TaskCard
               key={task.id}
               task={task}
-              onClick={handleTaskClick}
+              onClick={handleTaskEdit}
               onEdit={handleTaskEdit}
             />
           ))

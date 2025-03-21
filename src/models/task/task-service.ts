@@ -13,6 +13,16 @@ export function addTask$(task: Task): Observable<Task> {
   return of(task);
 }
 
+export function deleteTask$(id: string): Observable<void> {
+  const tasks = getFromLocalStorage();
+  const index = tasks.findIndex((task) => task.id === id);
+  if (index !== -1) {
+    tasks.splice(index, 1);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+  return of(undefined);
+}
+
 export function generateRandomId() {
   return Math.random().toString(20);
 }
