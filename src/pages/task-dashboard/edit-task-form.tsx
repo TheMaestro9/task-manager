@@ -1,18 +1,22 @@
 // Dialog.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTaskContext } from "../../context/TaskContext";
-import { TaskStatus } from "../../models/task/task";
+import { Task } from "../../models/task/task";
 
 interface AddTaskFormProps {
   isOpen: boolean;
-  taskStatus: TaskStatus;
+  task: Task;
   onClose: () => void;
 }
 
-export function AddTaskForm({ isOpen, onClose, taskStatus }: AddTaskFormProps) {
+export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const { addTask } = useTaskContext();
+  useEffect(() => {
+    setTitle(task.title);
+    setDescription(task.description);
+  }, [task]);
 
   if (!isOpen) return null;
 
@@ -22,7 +26,7 @@ export function AddTaskForm({ isOpen, onClose, taskStatus }: AddTaskFormProps) {
     const newTask = {
       title,
       description,
-      status: taskStatus,
+      status: task.status,
     };
 
     addTask(newTask);
