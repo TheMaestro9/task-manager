@@ -14,7 +14,7 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showDeleteButton, setShowDeleteButton] = useState(false);
-  const { addTask, deleteTask } = useTaskContext();
+  const { addTask, deleteTask, editTask } = useTaskContext();
   useEffect(() => {
     setTitle(task.title);
     setDescription(task.description);
@@ -22,17 +22,20 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
   }, [task]);
 
   if (!isOpen) return null;
+  const isOnEditMode = task.id !== "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const newTask = {
+      id: task.id,
       title,
       description,
       status: task.status,
     };
 
-    addTask(newTask);
+    if (isOnEditMode) editTask(newTask);
+    else addTask(newTask);
     onClose(); // close the modal after save
     setTitle(""); // reset form
     setDescription("");

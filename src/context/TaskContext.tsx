@@ -6,11 +6,12 @@ import React, {
   useState,
 } from "react";
 import { first } from "rxjs";
-import { Task } from "../models/task/task";
+import { Task, TaskStatus } from "../models/task/task";
 import {
   addTask$,
   deleteTask$,
   fetchTasks$,
+  moveTask$,
 } from "../models/task/task-service";
 
 interface TaskContextType {
@@ -18,6 +19,8 @@ interface TaskContextType {
   addTask: (taskData: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   getTasksByStatus: (status: string) => Task[];
+  moveTask: (taskId: string, newStatus: TaskStatus) => void;
+  editTask: (task: Task) => void;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -56,9 +59,30 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
+  const moveTask = (taskId: string, newStatus: TaskStatus) => {
+    moveTask$(taskId, newStatus).subscribe(() => {
+      setTasks(
+        tasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    });
+  };
+
+  const editTask = (task: Partial<Task>) => {
+    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)));
+  };
+
   return (
     <TaskContext.Provider
-      value={{ tasks, addTask, getTasksByStatus, deleteTask }}
+      value={{
+        tasks,
+        addTask,
+        getTasksByStatus,
+        deleteTask,
+        moveTask,
+        editTask,
+      }}
     >
       {children}
     </TaskContext.Provider>

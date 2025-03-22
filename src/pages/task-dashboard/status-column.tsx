@@ -1,5 +1,6 @@
 import { Task } from "../../models/task/task";
 
+import { useDroppable } from "@dnd-kit/core";
 import React, { useState } from "react";
 import PlusIcon from "../../assets/icons/plus.svg";
 import { useTaskContext } from "../../context/TaskContext";
@@ -13,6 +14,8 @@ export interface StatusColumnProps {
 
 const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
   const { getTasksByStatus } = useTaskContext();
+  const { setNodeRef } = useDroppable({ id: status });
+
   const [taskToEdit, setTaskToEdit] = useState<Task>(new Task());
   const tasksInColumn = getTasksByStatus(status);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
@@ -34,7 +37,10 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
   };
 
   return (
-    <div className="flex flex-col justify-between gap-4 p-4 bg-gray-100 rounded-xl w-[300px] ">
+    <div
+      className="flex flex-col justify-between gap-4 p-4 bg-gray-100 rounded-xl w-[300px] "
+      ref={setNodeRef}
+    >
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold mb-2">
           {getTaskStatusName(status)}

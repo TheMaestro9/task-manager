@@ -1,6 +1,6 @@
 // services/api.ts
 import { Observable, of } from "rxjs";
-import { Task } from "./task";
+import { Task, TaskStatus } from "./task";
 
 export function fetchTasks$() {
   return of(getFromLocalStorage());
@@ -23,6 +23,18 @@ export function deleteTask$(id: string): Observable<void> {
   return of(undefined);
 }
 
+export function moveTask$(
+  taskId: string,
+  newStatus: TaskStatus
+): Observable<void> {
+  const tasks = getFromLocalStorage();
+  const index = tasks.findIndex((task) => task.id === taskId);
+  if (index !== -1) {
+    tasks[index].status = newStatus;
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+  return of(undefined);
+}
 export function generateRandomId() {
   return Math.random().toString(20);
 }
