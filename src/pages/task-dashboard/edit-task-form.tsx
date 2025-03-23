@@ -8,6 +8,7 @@ import { Task } from "../../models/task/task";
 import Popup from "../../shared/popup";
 import TextInput from "../../shared/form-fields/text-input";
 import TextArea from "../../shared/form-fields/text-area";
+import Button from "../../shared/button";
 
 interface AddTaskFormProps {
   isOpen: boolean;
@@ -96,28 +97,17 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
               }`}
             >
               {isOnEditMode && (
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  className="px-4 py-2 bg-red-300 text-gray-800 rounded hover:bg-red-400"
-                >
+                <Button type="button" variant="danger" onClick={handleDelete}>
                   Delete Task
-                </button>
+                </Button>
               )}
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-                >
+                <Button type="button" variant="secondary" onClick={onClose}>
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
+                </Button>
+                <Button type="submit" variant="primary">
                   Save
-                </button>
+                </Button>
               </div>
             </div>
           </form>
