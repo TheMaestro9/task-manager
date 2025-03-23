@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTaskContext } from "../../context/TaskContext";
 import { Task } from "../../models/task/task";
 import Popup from "../../shared/popup";
+import TextInput from "../../shared/form-fields/text-input";
+import TextArea from "../../shared/form-fields/text-area";
 
 interface AddTaskFormProps {
   isOpen: boolean;
@@ -77,32 +79,17 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <div>
-              <label className="block mb-1 font-medium">Title</label>
-              <input
-                type="text"
-                {...register("title")}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              />
-              {errors.title && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.title.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block mb-1 font-medium">Description</label>
-              <textarea
-                {...register("description")}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                rows={3}
-              />
-              {errors.description && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
+            <TextInput
+              label="Title"
+              type="text"
+              register={register("title")}
+              error={errors.title?.message}
+            />
+            <TextArea
+              label="Description"
+              register={register("description")}
+              error={errors.description?.message}
+            />
             <div
               className={`flex gap-2 ${
                 isOnEditMode ? "justify-between" : "justify-end"
