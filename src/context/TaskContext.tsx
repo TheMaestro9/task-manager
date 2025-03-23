@@ -21,6 +21,12 @@ interface TaskContextType {
   getTasksByStatus: (status: string) => Task[];
   moveTask: (taskId: string, newStatus: TaskStatus) => void;
   editTask: (task: Task) => void;
+  reorderTasksInColumn: (
+    status: TaskStatus,
+    activeId: string,
+    overId: string
+  ) => void;
+  getTaskById: (id: string) => Task | undefined;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -73,6 +79,32 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
     setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)));
   };
 
+  const getTaskById = (id: string): Task | undefined => {
+    return tasks.find((task) => task.id === id);
+  };
+
+  const reorderTasksInColumn = (
+    status: TaskStatus,
+    activeId: string,
+    overId: string
+  ) => {
+    setTasks((prevTasks) => {
+      const columnTasks = prevTasks.filter((t) => t.status === status);
+      const otherTasks = prevTasks.filter((t) => t.status !== status);
+
+      const activeIndex = columnTasks.findIndex((t) => t.id === activeId);
+      const overIndex = columnTasks.findIndex((t) => t.id === overId);
+
+      if (activeIndex === -1 || overIndex === -1) return prevTasks;
+
+      const updatedColumnTasks = [...columnTasks];
+      const [moved] = updatedColumnTasks.splice(activeIndex, 1);
+      updatedColumnTasks.splice(overIndex, 0, moved);
+
+      return [...otherTasks, ...updatedColumnTasks];
+    });
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -82,6 +114,8 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
         deleteTask,
         moveTask,
         editTask,
+        reorderTasksInColumn,
+        getTaskById,
       }}
     >
       {children}

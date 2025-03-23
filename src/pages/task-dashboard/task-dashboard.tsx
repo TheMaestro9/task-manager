@@ -2,18 +2,29 @@ import {
   closestCorners,
   DndContext,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import React from "react";
+import React, { useState } from "react";
 import { TaskProvider, useTaskContext } from "../../context/TaskContext";
 import { TaskStatus } from "../../models/task/task";
 import StatusColumn from "./status-column";
 import "./task-dashboard.scss";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import TaskCard from "./task-card";
 
 const TaskDashboardContent: React.FC = () => {
-  const { moveTask } = useTaskContext();
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const { moveTask, getTaskById, reorderTasksInColumn, tasks } =
+    useTaskContext();
+
+  const allTaskIds = tasks.map((task) => task.id);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -26,31 +37,84 @@ const TaskDashboardContent: React.FC = () => {
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveTaskId(event.active.id.toString());
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveTaskId(null); // clear after drop
+
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    if (!over) return;
 
-    const taskId = active.id.toString();
-    const newStatus = over.id as TaskStatus;
+    const activeId = active.id.toString();
+    const overId = over.id.toString();
 
-    moveTask(taskId, newStatus);
+    if (isDroppingOnColumn(overId)) {
+      handleMoveToEmptyColumn(activeId, overId as TaskStatus);
+      return;
+    }
+
+    handleTaskReorderOrMove(activeId, overId);
+  };
+
+  const isDroppingOnColumn = (id: string): boolean => {
+    return Object.values(TaskStatus).includes(id as TaskStatus);
+  };
+
+  const handleMoveToEmptyColumn = (taskId: string, toStatus: TaskStatus) => {
+    const task = getTaskById(taskId);
+    if (!task || task.status === toStatus) return;
+
+    moveTask(taskId, toStatus);
+  };
+
+  const handleTaskReorderOrMove = (activeId: string, overId: string) => {
+    const sourceTask = getTaskById(activeId);
+    const targetTask = getTaskById(overId);
+    if (!sourceTask || !targetTask) return;
+
+    const fromStatus = sourceTask.status;
+    const toStatus = targetTask.status;
+
+    if (fromStatus === toStatus) {
+      reorderTasksInColumn(fromStatus, activeId, overId);
+    } else {
+      moveTask(activeId, toStatus);
+    }
   };
 
   return (
     <DndContext
       collisionDetection={closestCorners}
       onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
       sensors={sensors}
     >
-      <div className="p-6 diagonal-gradient">
-        <div className="flex justify-between items-center mb-6"></div>
+      <SortableContext
+        items={allTaskIds}
+        strategy={verticalListSortingStrategy}
+      >
+        <div className="p-6 diagonal-gradient">
+          <div className="flex justify-between items-center mb-6"></div>
 
-        <div className="flex gap-6 overflow-x-auto pb-4">
-          <StatusColumn status={TaskStatus.PENDING} />
-          <StatusColumn status={TaskStatus.IN_PROGRESS} />
-          <StatusColumn status={TaskStatus.COMPLETE} />
+          <div className="flex gap-6 overflow-x-auto pb-4">
+            <StatusColumn status={TaskStatus.PENDING} />
+            <StatusColumn status={TaskStatus.IN_PROGRESS} />
+            <StatusColumn status={TaskStatus.COMPLETE} />
+          </div>
         </div>
-      </div>
+      </SortableContext>
+
+      <DragOverlay>
+        {activeTaskId ? (
+          <TaskCard
+            task={getTaskById(activeTaskId)!}
+            onClick={() => {}}
+            onEdit={() => {}}
+          />
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 };

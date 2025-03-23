@@ -1,6 +1,10 @@
 import { Task } from "../../models/task/task";
 
 import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import React, { useState } from "react";
 import PlusIcon from "../../assets/icons/plus.svg";
 import { useTaskContext } from "../../context/TaskContext";
@@ -19,10 +23,6 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
   const [taskToEdit, setTaskToEdit] = useState<Task>(new Task());
   const tasksInColumn = getTasksByStatus(status);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
-
-  const handleTaskClick = (task: Task) => {
-    console.log(task);
-  };
 
   const handleTaskEdit = (task: Task) => {
     setIsTaskFormOpen(true);

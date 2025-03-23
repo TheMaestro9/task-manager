@@ -1,4 +1,4 @@
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import EditIcon from "../../assets/icons/pencil.svg";
 import { getTaskStatusName, Task, TaskStatus } from "../../models/task/task";
 import Badge from "../../shared/badge";
@@ -30,15 +30,22 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
         return "bg-green-500";
     }
   };
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: task.id,
-  });
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
 
   const style = {
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
       : undefined,
-    transition: "all 0ms ease-in-out",
+    transition: "all 0ms",
+    opacity: isDragging ? 0 : 1,
   };
 
   return (
