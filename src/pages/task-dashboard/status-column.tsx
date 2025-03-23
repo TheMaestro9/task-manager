@@ -1,10 +1,5 @@
 import { Task } from "../../models/task/task";
-
 import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import React, { useState } from "react";
 import PlusIcon from "../../assets/icons/plus.svg";
 import { useTaskContext } from "../../context/TaskContext";

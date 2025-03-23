@@ -31,14 +31,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
     }
   };
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useSortable({ id: task.id });
 
   const style = {
     transform: transform

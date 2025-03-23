@@ -13,7 +13,6 @@ interface AddTaskFormProps {
   onClose: () => void;
 }
 
-// ✅ Zod schema
 const TaskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z
@@ -40,7 +39,6 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
     },
   });
 
-  // ✅ Update form when task prop changes
   useEffect(() => {
     reset({
       title: task.title,
