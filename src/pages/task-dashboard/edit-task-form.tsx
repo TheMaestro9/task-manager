@@ -1,5 +1,8 @@
 // Dialog.tsx
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTaskContext } from "../../context/TaskContext";
 import { Task } from "../../models/task/task";
 import Popup from "../../shared/popup";
@@ -10,35 +13,53 @@ interface AddTaskFormProps {
   onClose: () => void;
 }
 
-export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [showDeleteButton, setShowDeleteButton] = useState(false);
-  const { addTask, deleteTask, editTask } = useTaskContext();
-  useEffect(() => {
-    setTitle(task.title);
-    setDescription(task.description);
-    setShowDeleteButton(task.id !== "");
-  }, [task]);
+// ✅ Zod schema
+const TaskSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z
+    .string()
+    .max(1000, "Description must be less than 1000 characters"),
+});
 
-  if (!isOpen) return null;
+type TaskFormData = z.infer<typeof TaskSchema>;
+
+export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
+  const { addTask, deleteTask, editTask } = useTaskContext();
   const isOnEditMode = task.id !== "";
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TaskFormData>({
+    resolver: zodResolver(TaskSchema),
+    defaultValues: {
+      title: task.title,
+      description: task.description,
+    },
+  });
 
-    const newTask = {
+  // ✅ Update form when task prop changes
+  useEffect(() => {
+    reset({
+      title: task.title,
+      description: task.description,
+    });
+  }, [task, reset]);
+
+  if (!isOpen) return null;
+
+  const onSubmit = (data: TaskFormData) => {
+    const newTask: Task = {
       id: task.id,
-      title,
-      description,
+      title: data.title,
+      description: data.description || "",
       status: task.status,
     };
 
-    if (isOnEditMode) editTask(newTask);
-    else addTask(newTask);
-    onClose(); // close the modal after save
-    setTitle(""); // reset form
-    setDescription("");
+    isOnEditMode ? editTask(newTask) : addTask(newTask);
+    onClose();
   };
 
   const handleDelete = () => {
@@ -51,33 +72,45 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
       onClose={onClose}
       content={
         <div>
-          <h2 className="text-xl font-bold mb-4">Add New Task</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <h2 className="text-xl font-bold mb-4">
+            {isOnEditMode ? "Edit Task" : "Add New Task"}
+          </h2>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
             <div>
               <label className="block mb-1 font-medium">Title</label>
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                {...register("title")}
                 className="w-full border border-gray-300 rounded px-3 py-2"
-                required
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.title.message}
+                </p>
+              )}
             </div>
             <div>
               <label className="block mb-1 font-medium">Description</label>
               <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                {...register("description")}
                 className="w-full border border-gray-300 rounded px-3 py-2"
                 rows={3}
               />
+              {errors.description && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
             <div
               className={`flex gap-2 ${
-                showDeleteButton ? "justify-between" : "justify-end"
+                isOnEditMode ? "justify-between" : "justify-end"
               }`}
             >
-              {showDeleteButton && (
+              {isOnEditMode && (
                 <button
                   type="button"
                   onClick={handleDelete}
@@ -94,7 +127,6 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -106,6 +138,6 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
           </form>
         </div>
       }
-    ></Popup>
+    />
   );
 }
