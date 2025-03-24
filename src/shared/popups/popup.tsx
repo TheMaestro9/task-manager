@@ -1,4 +1,4 @@
-import closeIcon from "../assets/icons/x.svg";
+import closeIcon from "../../assets/icons/x.svg";
 
 interface PopupProps {
   content: React.ReactNode;
