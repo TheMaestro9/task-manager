@@ -80,55 +80,52 @@ export function EditTaskForm({ isOpen, onClose, task }: AddTaskFormProps) {
 
   return (
     <div>
-      <Popup
-        onClose={onClose}
-        content={
-          <div>
-            <h2 className="text-xl font-bold mb-4">
-              {isOnEditMode ? "Edit Task" : "Add New Task"}
-            </h2>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
+      <Popup onClose={onClose}>
+        <div>
+          <h2 className="text-xl font-bold mb-4">
+            {isOnEditMode ? "Edit Task" : "Add New Task"}
+          </h2>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <TextInput
+              label="Title"
+              type="text"
+              register={register("title")}
+              error={errors.title?.message}
+            />
+            <TextArea
+              label="Description"
+              register={register("description")}
+              error={errors.description?.message}
+            />
+            <div
+              className={`flex gap-2 ${
+                isOnEditMode ? "justify-between" : "justify-end"
+              }`}
             >
-              <TextInput
-                label="Title"
-                type="text"
-                register={register("title")}
-                error={errors.title?.message}
-              />
-              <TextArea
-                label="Description"
-                register={register("description")}
-                error={errors.description?.message}
-              />
-              <div
-                className={`flex gap-2 ${
-                  isOnEditMode ? "justify-between" : "justify-end"
-                }`}
-              >
-                {isOnEditMode && (
-                  <Button
-                    type="button"
-                    variant="danger"
-                    onClick={handleDeleteClick}
-                  >
-                    Delete Task
-                  </Button>
-                )}
-                <div className="flex gap-2">
-                  <Button type="button" variant="secondary" onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="primary">
-                    Save
-                  </Button>
-                </div>
+              {isOnEditMode && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={handleDeleteClick}
+                >
+                  Delete Task
+                </Button>
+              )}
+              <div className="flex gap-2">
+                <Button type="button" variant="secondary" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary">
+                  Save
+                </Button>
               </div>
-            </form>
-          </div>
-        }
-      />
+            </div>
+          </form>
+        </div>
+      </Popup>
       <ConfirmDialog
         isOpen={showConfirm}
         title="Delete Task"
