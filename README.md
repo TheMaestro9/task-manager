@@ -1,4 +1,4 @@
-## 📋 Task Manager Assignment
+# 📋 Task Manager Assignment
 
 ## 🚀 How to Run Locally
 
