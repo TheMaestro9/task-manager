@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTaskContext } from "../../context/TaskContext";
-import { Task } from "../../models/task/task";
-import Popup from "../../shared/popups/popup";
-import TextInput from "../../shared/form-fields/text-input";
-import TextArea from "../../shared/form-fields/text-area";
-import Button from "../../shared/button";
-import ConfirmDialog from "../../shared/popups/confim-dialog";
+import { useTaskContext } from "../../../context/TaskContext";
+import Popup from "../../../shared/popups/popup";
+import TextInput from "../../../shared/form-fields/text-input";
+import TextArea from "../../../shared/form-fields/text-area";
+import Button from "../../../shared/button";
+import ConfirmDialog from "../../../shared/popups/confim-dialog";
+import { Task } from "../../../models/task/task";
 
 interface AddTaskFormProps {
   isOpen: boolean;

@@ -11,13 +11,13 @@ import {
 import React, { useState } from "react";
 import { TaskProvider, useTaskContext } from "../../context/TaskContext";
 import { TaskStatus } from "../../models/task/task";
-import StatusColumn from "./status-column";
+import StatusColumn from "./components/status-column";
 import "./task-dashboard.scss";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import TaskCard from "./task-card";
+import TaskCard from "./components/task-card";
 
 const TaskDashboardContent: React.FC = () => {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -44,6 +44,7 @@ const TaskDashboardContent: React.FC = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTaskId(null); // clear after drop
 
+    console.log("koko");
     const { active, over } = event;
     if (!over) return;
 

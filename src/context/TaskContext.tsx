@@ -42,6 +42,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
       .subscribe((fetchedTasks) => {
         setTasks(fetchedTasks);
       });
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "tasks" && event.newValue) {
+        const updatedTasks = JSON.parse(event.newValue);
+        setTasks(updatedTasks);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const addTask = (taskData: Partial<Task>) => {

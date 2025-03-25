@@ -1,10 +1,11 @@
+import { Task } from "../../../models/task/task";
 import { useDroppable } from "@dnd-kit/core";
 import React, { useState } from "react";
-import PlusIcon from "../../assets/icons/plus.svg";
-import { useTaskContext } from "../../context/TaskContext";
-import { TaskStatus, Task, getTaskStatusName } from "../../models/task/task";
-import { EditTaskForm } from "./components/edit-task-form";
-import TaskCard from "./components/task-card";
+import PlusIcon from "../../../assets/icons/plus.svg";
+import { useTaskContext } from "../../../context/TaskContext";
+import { getTaskStatusName, TaskStatus } from "../../../models/task/task";
+import { EditTaskForm } from "./edit-task-form";
+import TaskCard from "./task-card";
 
 export interface StatusColumnProps {
   status: TaskStatus;

@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
-import EditIcon from "../../assets/icons/pencil.svg";
-import { getTaskStatusName, Task, TaskStatus } from "../../models/task/task";
-import Badge from "../../shared/badge";
+import EditIcon from "../../../assets/icons/pencil.svg";
+import { getTaskStatusName, Task, TaskStatus } from "../../../models/task/task";
+import Badge from "../../../shared/badge";
 
 interface TaskCardProps {
   task: Task;
@@ -30,6 +30,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
         return "bg-green-500";
     }
   };
+
+  console.log("in task card");
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useSortable({ id: task.id });
