@@ -9,7 +9,9 @@ export function fetchTasks$() {
 // this function mimics the api call to add a task
 export function addTask$(task: Task): Observable<Task> {
   task.id = generateRandomId();
-  saveToLocalStorage(task);
+  const tasks = getFromLocalStorage();
+  tasks.push(task);
+  saveToLocalStorage(tasks);
   return of(task);
 }
 
@@ -18,7 +20,7 @@ export function deleteTask$(id: string): Observable<void> {
   const index = tasks.findIndex((task) => task.id === id);
   if (index !== -1) {
     tasks.splice(index, 1);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    saveToLocalStorage(tasks);
   }
   return of(undefined);
 }
@@ -31,18 +33,27 @@ export function moveTask$(
   const index = tasks.findIndex((task) => task.id === taskId);
   if (index !== -1) {
     tasks[index].status = newStatus;
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    saveToLocalStorage(tasks);
   }
   return of(undefined);
 }
-export function generateRandomId() {
+
+export function editTask$(task: Partial<Task>): Observable<Task> {
+  const tasks = getFromLocalStorage();
+  const index = tasks.findIndex((t) => t.id === task.id);
+  if (index !== -1) {
+    tasks[index] = { ...tasks[index], ...task };
+    saveToLocalStorage(tasks);
+  }
+  return of(tasks[index]);
+}
+
+function generateRandomId() {
   return Math.random().toString(20);
 }
 
-function saveToLocalStorage(task: Task) {
-  const tasks = getFromLocalStorage();
-  tasks.push(task);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+function saveToLocalStorage(newTasks: Task[]) {
+  localStorage.setItem("tasks", JSON.stringify(newTasks));
 }
 
 function getFromLocalStorage(): Task[] {

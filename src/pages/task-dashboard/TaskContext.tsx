@@ -10,9 +10,10 @@ import { Task, TaskStatus } from "../../models/task/task";
 import {
   addTask$,
   deleteTask$,
+  editTask$,
   fetchTasks$,
   moveTask$,
-} from "../../models/task/task-service";
+} from "../../models/task/task-apis";
 
 interface TaskContextType {
   tasks: Task[];
@@ -42,6 +43,16 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
       .subscribe((fetchedTasks) => {
         setTasks(fetchedTasks);
       });
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "tasks" && event.newValue) {
+        const updatedTasks = JSON.parse(event.newValue);
+        setTasks(updatedTasks);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const addTask = (taskData: Partial<Task>) => {
@@ -76,7 +87,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const editTask = (task: Partial<Task>) => {
-    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)));
+    editTask$(task).subscribe(() => {
+      setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)));
+    });
   };
 
   const getTaskById = (id: string): Task | undefined => {
