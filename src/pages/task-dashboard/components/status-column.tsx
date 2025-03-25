@@ -1,6 +1,6 @@
 import { Task } from "../../../models/task/task";
 import { useDroppable } from "@dnd-kit/core";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import PlusIcon from "../../../assets/icons/plus.svg";
 import { useTaskContext } from "../TaskContext";
 import { getTaskStatusName, TaskStatus } from "../../../models/task/task";
@@ -19,10 +19,10 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
   const tasksInColumn = getTasksByStatus(status);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
 
-  const handleTaskEdit = (task: Task) => {
+  const handleTaskEdit = useCallback((task: Task) => {
     setIsTaskFormOpen(true);
     setTaskToEdit(task);
-  };
+  }, []);
 
   const handleTaskAdd = () => {
     setIsTaskFormOpen(true);
@@ -45,12 +45,7 @@ const StatusColumn: React.FC<StatusColumnProps> = ({ status }) => {
           <div className="text-gray-400 italic">No tasks</div>
         ) : (
           tasksInColumn.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onClick={handleTaskEdit}
-              onEdit={handleTaskEdit}
-            />
+            <TaskCard key={task.id} task={task} onEdit={handleTaskEdit} />
           ))
         )}
       </div>

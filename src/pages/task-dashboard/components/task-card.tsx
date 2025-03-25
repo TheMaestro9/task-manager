@@ -2,14 +2,15 @@ import { useSortable } from "@dnd-kit/sortable";
 import EditIcon from "../../../assets/icons/pencil.svg";
 import { getTaskStatusName, Task, TaskStatus } from "../../../models/task/task";
 import Badge from "../../../shared/badge";
+import React from "react";
 
 interface TaskCardProps {
   task: Task;
   onEdit: (task: Task) => void;
-  onClick: (task: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
+  console.log("rending card");
   const getBadgeColor = (status: TaskStatus) => {
     switch (status) {
       case TaskStatus.PENDING:
@@ -30,8 +31,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
         return "bg-green-500";
     }
   };
-
-  console.log("in task card");
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useSortable({ id: task.id });
@@ -55,7 +54,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
     >
       <div className="flex justify-between">
         <div className="font-semibold">{task.title}</div>
-        <div className="p-1" onClick={() => onEdit(task)}>
+        <div className="p-1">
           <img width={14} src={EditIcon} alt="edit" />
         </div>
       </div>
@@ -78,4 +77,4 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onClick }) => {
   );
 };
 
-export default TaskCard;
+export default React.memo(TaskCard);

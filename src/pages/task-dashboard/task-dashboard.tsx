@@ -10,7 +10,7 @@ import {
 } from "@dnd-kit/core";
 import React, { useState } from "react";
 import { TaskProvider, useTaskContext } from "./TaskContext";
-import { TaskStatus } from "../../models/task/task";
+import { Task, TaskStatus } from "../../models/task/task";
 import StatusColumn from "./components/status-column";
 import "./task-dashboard.scss";
 import {
@@ -44,7 +44,6 @@ const TaskDashboardContent: React.FC = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTaskId(null); // clear after drop
 
-    console.log("koko");
     const { active, over } = event;
     if (!over) return;
 
@@ -111,8 +110,7 @@ const TaskDashboardContent: React.FC = () => {
         {activeTaskId ? (
           <TaskCard
             task={getTaskById(activeTaskId)!}
-            onClick={() => {}}
-            onEdit={() => {}}
+            onEdit={(task: Task) => {}}
           />
         ) : null}
       </DragOverlay>
