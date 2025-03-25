@@ -6,13 +6,13 @@ import React, {
   useState,
 } from "react";
 import { first } from "rxjs";
-import { Task, TaskStatus } from "../models/task/task";
+import { Task, TaskStatus } from "../../models/task/task";
 import {
   addTask$,
   deleteTask$,
   fetchTasks$,
   moveTask$,
-} from "../models/task/task-service";
+} from "../../models/task/task-service";
 
 interface TaskContextType {
   tasks: Task[];
@@ -42,16 +42,6 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
       .subscribe((fetchedTasks) => {
         setTasks(fetchedTasks);
       });
-
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "tasks" && event.newValue) {
-        const updatedTasks = JSON.parse(event.newValue);
-        setTasks(updatedTasks);
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const addTask = (taskData: Partial<Task>) => {

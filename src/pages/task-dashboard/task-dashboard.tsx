@@ -9,7 +9,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import React, { useState } from "react";
-import { TaskProvider, useTaskContext } from "../../context/TaskContext";
+import { TaskProvider, useTaskContext } from "./TaskContext";
 import { TaskStatus } from "../../models/task/task";
 import StatusColumn from "./components/status-column";
 import "./task-dashboard.scss";

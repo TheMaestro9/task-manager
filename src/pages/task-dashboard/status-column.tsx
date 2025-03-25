@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import React, { useState } from "react";
 import PlusIcon from "../../assets/icons/plus.svg";
-import { useTaskContext } from "../../context/TaskContext";
+import { useTaskContext } from "./TaskContext";
 import { TaskStatus, Task, getTaskStatusName } from "../../models/task/task";
 import { EditTaskForm } from "./components/edit-task-form";
 import TaskCard from "./components/task-card";

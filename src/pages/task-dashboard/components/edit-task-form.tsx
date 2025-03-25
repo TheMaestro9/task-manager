@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTaskContext } from "../../../context/TaskContext";
+import { useTaskContext } from "../TaskContext";
 import Popup from "../../../shared/popups/popup";
 import TextInput from "../../../shared/form-fields/text-input";
 import TextArea from "../../../shared/form-fields/text-area";
